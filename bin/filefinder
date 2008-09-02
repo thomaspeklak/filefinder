@@ -1,0 +1,45 @@
+#!/usr/local/bin/ruby -w
+#---
+# $Author: tpesl $	
+# $Revision: 525 $
+# $LastChangedDate: 2008-02-18 08:23:01 +0100 (Mo, 18 Feb 2008) $
+#+++
+
+require 'FileFinder.rb'
+require 'optparse'
+
+$path = '.'
+$filters = Hash.new
+
+OptionParser.new do |opts|
+	$filters[:ignore_subdirectories] = false
+  opts.banner = "Usage: FileFinder [options]"
+  opts.on('-p', '--path=PATH', String,'Path to search') do |p|
+		$path = p
+  end
+  opts.on('-t','--file-types=TYPE[,TYPE]',Array,'only list files of type TYPE') do |t|
+    $filters[:types] = t
+  end
+  opts.on('-i','--include=INLCUDE[,INCLUDE]',Array,'include only files matching INCLUDE') do |i|
+    $filters[:includes] = i
+  end
+  opts.on('-x','--exclude=EXCLUDE[,EXCLUDE]',Array,'do not include files matching EXCLUDE') do |x|
+    $filters[:excludes] = x
+  end
+  opts.on('-d','--ignore-directories','do not go into listed directories') do |x|
+    $filters[:ignore_directories] = x
+  end
+  opts.on('-s','--ignore-subdirectories','do not recursivle search sub directories') do |x|
+    $filters[:ignore_subdirectories] = true
+  end
+  opts.on('-m','--max-depth=MAX_DEPTH',Integer,'maximum depth of subdirectory') do |m|
+    $filters[:max_depth] = m
+  end
+  opts.separator ""
+  opts.on_tail('-h','--help','Show this message') do
+    puts opts
+    exit
+  end
+end.parse!
+
+puts FileFinder.find($path, $filters)

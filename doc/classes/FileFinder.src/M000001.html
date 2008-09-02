@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html>
+<head>
+  <title>find (FileFinder)</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+  <link rel="stylesheet" href="../.././rdoc-style.css" type="text/css" media="screen" />
+</head>
+<body class="standalone-code">
+  <pre><span class="ruby-comment cmt"># File lib/FileFinder.rb, line 28</span>
+  <span class="ruby-keyword kw">def</span> <span class="ruby-keyword kw">self</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">path</span>, <span class="ruby-operator">*</span><span class="ruby-identifier">config</span>)
+                <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">config</span>.<span class="ruby-identifier">empty?</span>)
+                        <span class="ruby-identifier">types</span> = <span class="ruby-identifier">exclusions</span> = <span class="ruby-keyword kw">false</span>
+                <span class="ruby-keyword kw">else</span>
+                        <span class="ruby-identifier">types</span>, <span class="ruby-identifier">types_filter</span> = <span class="ruby-identifier">filter_factory</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">0</span>][<span class="ruby-identifier">:types</span>])
+                        <span class="ruby-identifier">includes</span>, <span class="ruby-identifier">includes_filter</span> = <span class="ruby-identifier">filter_factory</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">0</span>][<span class="ruby-identifier">:includes</span>])
+                        <span class="ruby-identifier">excludes</span>, <span class="ruby-identifier">excludes_filter</span> = <span class="ruby-identifier">filter_factory</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">0</span>][<span class="ruby-identifier">:excludes</span>])
+                        <span class="ruby-identifier">ignore_subdirectories</span> = <span class="ruby-identifier">switch_factory</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">0</span>][<span class="ruby-identifier">:ignore_subdirectories</span>])
+                        <span class="ruby-identifier">max_depth</span>, <span class="ruby-identifier">max_depth_value</span> = <span class="ruby-identifier">integer_factory</span>(<span class="ruby-identifier">config</span>[<span class="ruby-value">0</span>][<span class="ruby-identifier">:max_depth</span>])
+                <span class="ruby-keyword kw">end</span>
+    <span class="ruby-ivar">@files</span> = <span class="ruby-constant">Array</span>.<span class="ruby-identifier">new</span>
+    <span class="ruby-constant">Find</span>.<span class="ruby-identifier">find</span>(<span class="ruby-identifier">path</span>) <span class="ruby-keyword kw">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">f</span><span class="ruby-operator">|</span>
+                        <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">ignore_subdirectories</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-constant">FileTest</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-identifier">f</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">f!</span>=<span class="ruby-value str">'.'</span>)
+                                <span class="ruby-constant">Find</span>.<span class="ruby-identifier">prune</span>
+                        <span class="ruby-keyword kw">end</span>
+                        <span class="ruby-keyword kw">if</span> (<span class="ruby-identifier">max_depth</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-constant">FileTest</span>.<span class="ruby-identifier">directory?</span>(<span class="ruby-identifier">f</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">f</span>.<span class="ruby-identifier">gsub</span>(<span class="ruby-regexp re">/^(..\/|.\/)*/</span>,<span class="ruby-value str">''</span>)<span class="ruby-operator">=~</span> <span class="ruby-node">/(.*\/){#{max_depth_value}}/</span>)
+                                <span class="ruby-constant">Find</span>.<span class="ruby-identifier">prune</span>
+                        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">if</span> <span class="ruby-constant">FileTest</span>.<span class="ruby-identifier">file?</span>(<span class="ruby-identifier">f</span>)
+        <span class="ruby-keyword kw">if</span> ((<span class="ruby-identifier">types</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">f</span>) <span class="ruby-operator">=~</span> <span class="ruby-node">/#{types_filter}$/i</span>) <span class="ruby-operator">||</span> <span class="ruby-operator">!</span><span class="ruby-identifier">types</span>) <span class="ruby-operator">&amp;&amp;</span> ((<span class="ruby-identifier">includes</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">f</span>) <span class="ruby-operator">=~</span> <span class="ruby-node">/#{includes_filter}/i</span>) <span class="ruby-operator">||</span> <span class="ruby-operator">!</span><span class="ruby-identifier">includes</span>) 
+          <span class="ruby-ivar">@files</span>.<span class="ruby-identifier">push</span>(<span class="ruby-identifier">f</span>) <span class="ruby-keyword kw">unless</span> <span class="ruby-identifier">excludes</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-constant">File</span>.<span class="ruby-identifier">basename</span>(<span class="ruby-identifier">f</span>) <span class="ruby-operator">=~</span> <span class="ruby-node">/#{excludes_filter}/i</span>
+        <span class="ruby-keyword kw">end</span>
+      <span class="ruby-keyword kw">end</span>
+    <span class="ruby-keyword kw">end</span>         
+    <span class="ruby-ivar">@files</span>
+  <span class="ruby-keyword kw">end</span></pre>
+</body>
+</html>

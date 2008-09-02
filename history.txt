@@ -1,0 +1,16 @@
+version 0.0.8
+ignore_directories added
+
+version 0.0.4.1
+BUGFIX ignore subdirectories did not work correctly
+
+version 0.0.4
+- maxdepth of subdirectories
+
+version 0.0.2
+- switch to ignore subdirectories
+
+version 0.0.1
+- recursively search path
+- file types
+- excludes and includes
