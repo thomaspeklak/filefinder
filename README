@@ -1,0 +1,13 @@
+finds files in a given path possible filters 
+- types 
+- includes 
+- excludes 
+- ignore_subdirectories 
+- max_depth 
+
+Executable:
+	filefinder
+
+Example: 
+  FileFinder::find('path',:types => ['.xml'],:exclusions => 't')
+
